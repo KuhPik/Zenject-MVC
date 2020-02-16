@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "GameConfig", menuName = "Configs/GameConfig")]
-public class GameConfig : ScriptableObject
+public class GameConfig : MonoBehaviour
 {
     [SerializeField] int maxScore;
     [SerializeField] int tapScore;

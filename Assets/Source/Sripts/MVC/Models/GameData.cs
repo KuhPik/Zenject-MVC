@@ -1,5 +1,6 @@
 ﻿using Zenject;
 using UnityEngine.SceneManagement;
+using UnityEngine;
 
 public sealed class GameData
 {
@@ -13,7 +14,7 @@ public sealed class GameData
     {
         _score += score;
 
-        if (score >= _config.MaxScore)
+        if (_score >= _config.MaxScore)
         {
             _uiManager.OpenScreen<EndScreen>();
         }

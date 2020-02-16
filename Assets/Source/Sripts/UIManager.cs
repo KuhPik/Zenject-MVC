@@ -2,24 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Zenject;
 
 public class UIManager : MonoBehaviour
 {
+    [Inject] GameScreenController _gameScreenController;
+    [Inject] EndScreenController _endScreenController;
+
     [SerializeField] UIScreen[] _screens;
     [SerializeField] UIScreen _firstScreen;
 
     Dictionary<Type, IUIController> _screensDictionary; //Would be better with FSM?
-    GameInstaller _gameInstaller;
 
     public void Initialize()
     {
         _screensDictionary = new Dictionary<Type, IUIController>();
-
-        //for-loop with assembly-type factory?
-        InitializeController(new GameScreenController());
-        InitializeController(new EndScreenController());
-
         _firstScreen.SetState(true);
+
+        InitializeController(_gameScreenController);
+        InitializeController(_endScreenController);
     }
 
     public void OpenScreen<T>(bool closeOthers = true) where T : UIScreen
@@ -35,13 +36,10 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    private void InitializeController<T>(UIController<T> controller) where T : UIScreen
+    public void InitializeController<T>(UIController<T> controller) where T : UIScreen
     {
         var screen = _screens.First(x => x.GetType() == typeof(T));
         _screensDictionary.Add(typeof(T), controller);
         controller.Initialize(screen);
-
-        //fix?
-        _gameInstaller.FindOrGet().InstallUIController(controller);
     }
 }

@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "UIConfig", menuName = "Configs/UIConfig")]
-public class UIConfig : ScriptableObject
+public class UIConfig : MonoBehaviour
 {
     [SerializeField] float _restartingTime;
     public float RestartingTime => _restartingTime;
