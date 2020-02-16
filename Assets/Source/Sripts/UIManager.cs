@@ -16,6 +16,7 @@ public class UIManager : MonoBehaviour
     {
         _firstScreen.SetState(true);
 
+        //Loop with assembly-type factory?
         InitializeController(new GameScreenController());
         InitializeController(new EndScreenController());
     }
