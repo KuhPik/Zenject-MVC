@@ -6,21 +6,18 @@ using Zenject;
 
 public class UIManager : MonoBehaviour
 {
-    [Inject] GameScreenController _gameScreenController;
-    [Inject] EndScreenController _endScreenController;
-
     [SerializeField] UIScreen[] _screens;
     [SerializeField] UIScreen _firstScreen;
 
-    Dictionary<Type, IUIController> _screensDictionary; //Would be better with FSM?
+    Dictionary<Type, IUIController> _screensDictionary = new Dictionary<Type, IUIController>(); //Would be better with FSM?
+    GameInstaller _gameInstaller;
 
     public void Initialize()
     {
-        _screensDictionary = new Dictionary<Type, IUIController>();
         _firstScreen.SetState(true);
 
-        InitializeController(_gameScreenController);
-        InitializeController(_endScreenController);
+        InitializeController(new GameScreenController());
+        InitializeController(new EndScreenController());
     }
 
     public void OpenScreen<T>(bool closeOthers = true) where T : UIScreen
@@ -41,5 +38,7 @@ public class UIManager : MonoBehaviour
         var screen = _screens.First(x => x.GetType() == typeof(T));
         _screensDictionary.Add(typeof(T), controller);
         controller.Initialize(screen);
+
+        _gameInstaller.FindOrGet().OnUIControllerInstantiated(controller);
     }
 }

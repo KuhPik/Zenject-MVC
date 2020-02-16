@@ -11,27 +11,23 @@ public class GameInstaller : MonoInstaller
     public override void InstallBindings()
     {
         //Configs (SO is bugging...)
-        Container.Bind<GameConfig>().FromInstance(_gameConfig).AsSingle();
-        Container.Bind<UIConfig>().FromInstance(_uiConfig).AsSingle();
+        Container.Bind<GameConfig>().FromInstance(_gameConfig).AsSingle().NonLazy();
+        Container.Bind<UIConfig>().FromInstance(_uiConfig).AsSingle().NonLazy();
 
         //Datas
-        Container.Bind<GameData>().FromNew().AsSingle();
-
-        //UIControllers
-        Container.Bind<GameScreenController>().FromNew().AsSingle();
-        Container.Bind<EndScreenController>().FromNew().AsSingle();
+        Container.Bind<GameData>().FromNew().AsSingle().NonLazy();
 
         //Managers
-        Container.Bind<AsyncProcessor>().FromNewComponentOnNewGameObject().AsSingle();
-        Container.Bind<UIManager>().FromInstance(_uiManager).AsSingle();
+        Container.Bind<AsyncProcessor>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
+        Container.Bind<UIManager>().FromInstance(_uiManager).AsSingle().NonLazy();
 
         //Initialize
-        StartCoroutine(DelayRoutine());
+        _uiManager.Initialize();
     }
 
-    IEnumerator DelayRoutine()
+    public void OnUIControllerInstantiated<T>(UIController<T> controller) where T : UIScreen
     {
-        yield return new WaitForSeconds(0.1f);
-        _uiManager.Initialize();
+        Container.Bind<UIController<T>>().FromInstance(controller).AsSingle().NonLazy();
+        Container.Inject(controller);
     }
 }
